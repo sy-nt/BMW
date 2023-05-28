@@ -175,16 +175,19 @@ function Comment({ userId, text, color }) {
     return (
         <>
             {user && (
-                <FlexBetween
+                <Box
                     sx={{
                         color: color,
                         m: "0.5rem 0",
                         pl: "1rem",
-                        pb: "1rem"
+                        display: "flex",
+                        alignItems: "center",
                     }}
                 >
-                    <UserImage image={user.picturePath} size="20px" />
+                    <UserImage image={user.picturePath} size="40px" />
                     <Typography
+                        fontWeight="500"
+                        variant="h5"
                         sx={{
                             color: color,
                             m: "0.5rem 0",
@@ -193,7 +196,7 @@ function Comment({ userId, text, color }) {
                     >
                         {user.firstName} {user.lastName}
                     </Typography>
-                </FlexBetween>
+                </Box>
             )}
             <Typography
                 sx={{
