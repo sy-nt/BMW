@@ -46,6 +46,20 @@ export const getUserPosts = async (req, res) => {
     }
 };
 
+export const searchPost = async (req, res) => {
+    try {
+        const regexSearch = new RegExp(req.params.search);
+        const results = await Post.find({
+            $text: { $search: regexSearch },
+        })
+            .sort({ createdAt: -1 })
+            .lean();
+        res.status(200).json(results);
+    } catch (err) {
+        res.status(404).json({ message: err.message });
+    }
+};
+
 /* UPDATE */
 export const likePost = async (req, res) => {
     try {
