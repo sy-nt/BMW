@@ -13,10 +13,9 @@ import {
     InputBase,
 } from "@mui/material";
 import FlexBetween from "components/FlexBetween";
-import UserImage from "components/UserImage";
 import Friend from "components/Friend";
 import WidgetWrapper from "components/WidgetWrapper";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setPost } from "state";
 
@@ -31,12 +30,10 @@ const PostWidget = ({
     likes,
     comments,
 }) => {
-    let selector = useSelector((state) => state.posts);
     const [comment, setComment] = useState("");
     const [isComments, setIsComments] = useState(false);
     const dispatch = useDispatch();
     const token = useSelector((state) => state.token);
-    const [listPost, setListPost] = useState(selector);
     const loggedInUserId = useSelector((state) => state.user._id);
     const isLiked = Boolean(likes[loggedInUserId]);
     const likeCount = Object.keys(likes).length;
@@ -44,10 +41,6 @@ const PostWidget = ({
     const { palette } = useTheme();
     const main = palette.neutral.main;
     const primary = palette.primary.main;
-
-    useEffect(() => {
-        setListPost(selector);
-    }, []);
 
     const patchLike = async () => {
         const response = await fetch(
@@ -66,24 +59,24 @@ const PostWidget = ({
     };
 
     const createComment = async () => {
-        const response = await fetch(
-            `http://23.20.89.208:4000/comments/${postId}`,
-            {
-                method: "POST",
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ userId: loggedInUserId, text: comment }),
-            }
-        );
-        const newComment = await response.json();
-        const newListPost = listPost.map((e) => {
-            return e._id !== postId
-                ? e
-                : { ...e, comments: [...e.comments, newComment] };
-        });
-        dispatch(setPost({ post: newListPost }));
+        if (comment) {
+            const response = await fetch(
+                `http://23.20.89.208:4000/comments/${postId}`,
+                {
+                    method: "POST",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        userId: loggedInUserId,
+                        text: comment,
+                    }),
+                }
+            );
+            const newComment = await response.json();
+            dispatch(setPost({ post: newComment }));
+        }
     };
 
     return (
@@ -159,6 +152,7 @@ const PostWidget = ({
                         onKeyDown={async (e) => {
                             if (e.key === "Enter") {
                                 await createComment();
+                                setIsComments(false);
                             }
                         }}
                     />
