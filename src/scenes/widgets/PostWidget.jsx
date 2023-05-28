@@ -13,12 +13,13 @@ import {
     InputBase,
 } from "@mui/material";
 import FlexBetween from "components/FlexBetween";
+import UserImage from "components/UserImage";
 import Friend from "components/Friend";
 import WidgetWrapper from "components/WidgetWrapper";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setPost } from "state";
-
+import { useEffect } from "react";
 const PostWidget = ({
     postId,
     postUserId,
@@ -128,20 +129,12 @@ const PostWidget = ({
                 <>
                     <Box mt="0.5rem">
                         {comments.map((comment, i) => (
-                            <Box key={`${name}-${i}`}>
-                                <FlexBetween>
-                                    <Typography
-                                        sx={{
-                                            color: main,
-                                            m: "0.5rem 0",
-                                            pl: "1rem",
-                                        }}
-                                    >
-                                        {comment.text}
-                                    </Typography>
-                                </FlexBetween>
-                                <Divider />
-                            </Box>
+                            <Comment
+                                userId={comment.userId}
+                                text={comment.text}
+                                color={main}
+                                index={`${comment.userId}-${i}`}
+                            />
                         ))}
                         <Divider />
                     </Box>
@@ -161,5 +154,59 @@ const PostWidget = ({
         </WidgetWrapper>
     );
 };
+
+function Comment({ userId, text, color }) {
+    const token = useSelector((state) => state.token);
+    const [user, setUser] = useState({});
+    const getUserInfor = async () => {
+        const response = await fetch(
+            `http://23.20.89.208:4000/users/${userId}`,
+            {
+                method: "GET",
+                headers: { Authorization: `Bearer ${token}` },
+            }
+        );
+        const data = await response.json();
+        setUser(data);
+    };
+    useEffect(() => {
+        getUserInfor();
+    }, []);
+    return (
+        <>
+            {user && (
+                <FlexBetween
+                    sx={{
+                        color: color,
+                        m: "0.5rem 0",
+                        pl: "1rem",
+                        pb: "1rem"
+                    }}
+                >
+                    <UserImage image={user.picturePath} size="20px" />
+                    <Typography
+                        sx={{
+                            color: color,
+                            m: "0.5rem 0",
+                            pl: "1rem",
+                        }}
+                    >
+                        {user.firstName} {user.lastName}
+                    </Typography>
+                </FlexBetween>
+            )}
+            <Typography
+                sx={{
+                    color: color,
+                    m: "0.5rem 0",
+                    pl: "1rem",
+                }}
+            >
+                {text}
+            </Typography>
+            <Divider />
+        </>
+    );
+}
 
 export default PostWidget;
