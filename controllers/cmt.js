@@ -12,9 +12,13 @@ export const createComment = async (req, res) => {
             postId,
             text,
         });
-        const updatedPost = await Post.findByIdAndUpdate(postId, {
-            comments: [...foundPost.comments, newComment],
-        });
+        const updatedPost = await Post.findByIdAndUpdate(
+            postId,
+            {
+                comments: [...foundPost.comments, newComment],
+            },
+            { new: true }
+        );
 
         res.status(201).json(updatedPost);
     } catch (err) {
