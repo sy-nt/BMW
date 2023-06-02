@@ -47,7 +47,11 @@ app.use(bodyParser.json({ limit: "30mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
 app.use(
     cors({
-        origin: ["http://3.227.150.6:3000", "http://localhost:3000"],
+        origin: [
+            "http://3.227.150.6:3000",
+            "http://localhost:3000",
+            "http://52.0.222.231:3000",
+        ],
     })
 );
 app.use("/assets", express.static(path.join(__dirname, "public/assets")));
