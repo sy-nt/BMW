@@ -1,7 +1,7 @@
 import axios from "axios";
 import queryString from "query-string";
 
-const baseUrl = `${process.env.REACT_APP_API_URL}`;
+const baseUrl = process.env.REACT_APP_API_URL;
 
 const getAccessToken = () => localStorage.getItem("accessToken");
 

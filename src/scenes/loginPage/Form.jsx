@@ -63,8 +63,8 @@ const Form = () => {
             formData.append(value, values[value]);
         }
         formData.append("picturePath", values.picture.name);
-
         const savedUserResponse = await authApi.register(formData);
+        console.log(savedUserResponse);
         onSubmitProps.resetForm();
 
         if (savedUserResponse) {
