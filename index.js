@@ -57,48 +57,16 @@ app.use(
 app.use("/assets", express.static(path.join(__dirname, "public/assets")));
 
 /* FILE STORAGE */
+/* FILE STORAGE */
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, "public/assets");
     },
-    filename: (req, file, cb) => {
-        const fileOriginalName = file.fieldname
-            .toLowerCase()
-            .split(" ")
-            .join("-");
-        cb(
-            null,
-            fileOriginalName +
-                "-" +
-                Date.now() +
-                path.extname(file.originalname)
-        );
+    filename: function (req, file, cb) {
+        cb(null, file.originalname);
     },
 });
-const upload = multer({
-    storage,
-    fileFilter: function (_req, file, cb) {
-        checkFileType(file, cb);
-    },
-});
-function checkFileType(file, cb) {
-    // Allowed ext
-    const filetypes = /jpeg|jpg|png|gif/;
-    // Check ext
-    const extname = filetypes.test(
-        path.extname(file.originalname).toLowerCase()
-    );
-    // Check mime
-    const mimetype = filetypes.test(file.mimetype);
-    console.log(`exiname:: ${extname}`);
-    console.log(`mimetype:: ${mimetype}`);
-
-    if (mimetype && extname) {
-        return cb(null, true);
-    } else {
-        throw new Error("Invalid file type");
-    }
-}
+const upload = multer({ storage });
 /* ROUTES WITH FILES */
 app.post("/auth/register", upload.single("picture"), register);
 app.post("/posts", verifyToken, upload.single("picture"), createPost);
