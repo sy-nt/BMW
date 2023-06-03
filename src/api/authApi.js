@@ -1,8 +1,6 @@
 import axios from "axios";
 import axiosClient from "./axiosClient";
 
-const getAccessToken = () => localStorage.getItem("accessToken");
-
 const authApi = {
     login: (params) => axiosClient.post("auth/login", params),
     register: (params) =>
