@@ -61,8 +61,7 @@ const PostWidget = ({
                     text: comment,
                 },
             });
-            const newComment = await response.json();
-            dispatch(setPost({ post: newComment }));
+            dispatch(setPost({ post: response }));
         }
     };
 
